@@ -34,4 +34,4 @@ struct Graph {
   std::unordered_map<EdgeId, Edge> edges;
   NodeId nextNodeId = 0;
   EdgeId nextEdgeId = 0;
-}
+};
