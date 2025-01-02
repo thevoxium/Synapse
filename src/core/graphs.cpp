@@ -1,5 +1,6 @@
 #include "graphs.hpp"
 #include <algorithm>
+#include <functional>
 #include <iostream>
 
 namespace GraphOps {
@@ -141,6 +142,64 @@ void printGraph(const Graph &graph) {
       std::cout << '\n';
     }
   }
+}
+
+std::vector<NodeId> getNeighbors(const Graph &graph, NodeId nodeId) {
+  std::vector<NodeId> neighbors;
+  auto nodeIt = graph.nodes.find(nodeId);
+  if (nodeIt != graph.nodes.end()) {
+    for (EdgeId edgeId : nodeIt->second.outEdges) {
+      const auto &edge = graph.edges.at(edgeId);
+      neighbors.push_back(edge.targetId);
+    }
+  }
+  return neighbors;
+}
+
+void bfsTraversal(const Graph &graph, NodeId startNode) {
+  if (!graph.nodes.contains(startNode)) {
+    throw GraphError("Start node not found!");
+  }
+  std::queue<NodeId> queue;
+  std::unordered_set<NodeId> visited;
+
+  queue.push(startNode);
+  visited.insert(startNode);
+
+  while (!queue.empty()) {
+    NodeId current = queue.front();
+    queue.pop();
+    std::cout << current << "\n";
+    for (NodeId neighbor : getNeighbors(graph, current)) {
+      if (visited.find(neighbor) == visited.end()) {
+        queue.push(neighbor);
+        visited.insert(neighbor);
+      }
+    }
+  }
+}
+
+BFSIterator bfsBegin(const Graph &graph, NodeId startNode) {
+  return BFSIterator(graph, startNode);
+}
+
+bool bfsHasNext(BFSIterator &it) { return !it.queue.empty(); }
+
+NodeId bfsNext(BFSIterator &it) {
+  if (it.queue.empty()) {
+    throw GraphError("No more nodes to visit!");
+  }
+  NodeId current = it.queue.front();
+  it.queue.erase(it.queue.begin());
+  it.currentNode = current;
+
+  for (NodeId neighbor : getNeighbors(it.graph, current)) {
+    if (it.visited.find(neighbor) == it.visited.end()) {
+      it.queue.push_back(neighbor);
+      it.visited.insert(neighbor);
+    }
+  }
+  return current;
 }
 
 } // namespace GraphOps

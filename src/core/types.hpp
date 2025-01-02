@@ -3,6 +3,7 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -34,4 +35,19 @@ struct Graph {
   std::unordered_map<EdgeId, Edge> edges;
   NodeId nextNodeId = 0;
   EdgeId nextEdgeId = 0;
+};
+
+struct BFSIterator {
+  const Graph &graph;
+  NodeId currentNode;
+  std::vector<NodeId> queue;
+  std::unordered_set<NodeId> visited;
+
+  explicit BFSIterator(const Graph &g, NodeId startNode)
+      : graph(g), currentNode(startNode) {
+    if (graph.nodes.contains(startNode)) {
+      queue.push_back(startNode);
+      visited.insert(startNode);
+    }
+  }
 };

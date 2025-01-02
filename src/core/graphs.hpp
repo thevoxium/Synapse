@@ -14,4 +14,11 @@ bool updateEdge(Graph &graph, EdgeId id, const PropertyMap &properties);
 bool deleteEdge(Graph &graph, EdgeId id);
 
 void printGraph(const Graph &graph);
+
+void bfsTraversal(const Graph &graph, NodeId startNode);
+std::vector<NodeId> getNeighbors(const Graph &graph, NodeId startNode);
+BFSIterator bfsBegin(const Graph &graph, NodeId startNode);
+bool bfsHasNext(BFSIterator &it);
+NodeId bfsNext(BFSIterator &it);
+
 } // namespace GraphOps
